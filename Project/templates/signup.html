@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load custom_filters %}
+
+{% block title %}
+    Sign up
+{% endblock title %}
+
+{% block content %}
+    <div style="display: flex">
+        <div style="flex-basis: 90%">
+            <h2>Sign up</h2>
+            <hr>
+            <form method="post">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="id_username" class="form-label">Username:</label>
+                    <input type="text" class="form-control" name="username" id="id_username" maxlength="150" autofocus required>
+                </div>
+                <div class="mb-3">
+                    <label for="id_email" class="form-label">Email:</label>
+                    <input type="email" class="form-control" name="email" id="id_email" maxlength="150" required>
+                </div>
+                <div class="mb-3">
+                    <label for="id_password1" class="form-label">Password:</label>
+                    <input type="password" class="form-control" name="password1" id="id_password1" autocomplete="new-password" required>
+                </div>
+                <div class="mb-3">
+                    <label for="id_password2" class="form-label">Password confirmation:</label>
+                    <input type="password" class="form-control" name="password2" id="id_password2" autocomplete="new-password" required>
+                </div>
+                <button type="submit" class="btn btn-secondary">Sign up</button>
+            </form>
+        </div>
+        <div style="flex-basis: 10%">
+            <a href="/.." class="btn btn-secondary" style="margin-bottom: 3%">All news</a>
+        </div>
+    </div>
+{% endblock content %}

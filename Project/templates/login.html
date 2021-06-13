@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load custom_filters %}
+
+{% block title %}
+    Login
+{% endblock title %}
+
+{% block content %}
+    <div style="display: flex">
+        <div style="flex-basis: 90%">
+            <h2>Log in</h2>
+            <hr>
+            <form method="post" style="margin-bottom: 1%">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="username" class="form-label">Username:</label>
+                    <input type="text" class="form-control" name="username" id="username" maxlength="255">
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password:</label>
+                    <input type="password" class="form-control" name="password" id="password">
+                </div>
+                <button type="submit" class="btn btn-secondary">Log in</button>
+            </form>
+            <a href="/news/signup" class="btn btn-secondary">Sing up</a>
+        </div>
+        <div style="flex-basis: 10%">
+            <a href="/.." class="btn btn-secondary" style="margin-bottom: 3%">All news</a>
+        </div>
+    </div>
+{% endblock content %}

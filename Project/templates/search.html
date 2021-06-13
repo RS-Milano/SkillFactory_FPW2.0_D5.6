@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+{% load custom_filters %}
+
+{% block title %}
+    Search news
+{% endblock title %}
+
+{% block content %}
+    <div style="display: flex">
+        <div style="flex-basis: 90%">
+            <h2>Search news</h2>
+            <p>(total news on the site: {{ all_posts|length }})</p>  
+            <form method="GET">
+                <div class="mb-3">
+                    <label for="title" class="form-label">Title contains:</label>
+                    <input type="text" class="form-control" id="title" name="title__icontains">
+                </div>
+                <div class="mb-3">
+                <label for="create_data" class="form-label">Create data is greater than:</label>
+                <input type="date" class="form-control" id="create_data" name="create_data__gt">
+                </div>
+                <div class="mb-3">
+                    <label for="author" class="form-label">Author:</label>
+                    <select name="author" id="author">
+                        <option value="" selected=""></option>
+                        <option value="1">Bob</option>
+                        <option value="2">Alice</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-secondary">search</button>
+            </form>
+            <hr>
+            {% if posts %}
+                <table style="margin-left: auto; margin-right: auto;">
+                {% for post in object_list %}
+                    <tr>
+                        <td style="vertical-align: top; padding-right: 5vh;">
+                            <h6>{{ post.id }}</h6>
+                        </td>
+                        <td>
+                            <h6 style="text-align: justify">
+                                <a href="{{ post.id }}" style="text-decoration: none; color: #339999;">{{ post.title|censor }}</a>
+                                <i>({{ post.create_data|date:'M d Y' }})</i></h6>
+                            <p style="text-align: justify">{{ post.content|truncatewords:20|censor }}</p>
+                        </td>
+                        <td>
+                            <p>{{ post.creat_data }}</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <br>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </table>      
+            {% else %}
+                <h3>No news. Come back later!</h3>
+            {% endif %}
+            {% if is_paginated %}
+                {% if request.GET.author %}
+                    <div>
+                        {% if page_obj.has_previous %}
+                            <a href="{{ request.get_full_path }}&page={{ page_obj.previous_page_number }}" style="text-decoration: none; color: #339999;">&lt; back</a>
+                        {% else %}
+                            <span>&lt; back</span>
+                        {% endif %}
+                        {% if page_obj.has_next %}
+                            <a href="{{ request.get_full_path }}&page={{ page_obj.next_page_number }}" style="text-decoration: none; color: #339999;">forward &gt;</a>
+                        {% else %}
+                            <span>forward &gt;</span>
+                        {% endif %}
+                    </div>
+                    <div>
+                        {% if page_obj.paginator.num_pages < 6 %}
+                            {% for i in page_obj.paginator.page_range %}
+                                <a href="{{ request.get_full_path }}&page={{ i }}" class="btn btn-secondary" >{{ i }}</a>
+                            {% endfor %}
+                        {% else %}
+                            <a href="{{ request.get_full_path }}&page=1" class="btn btn-secondary" >1</a>
+                            {% if page_obj.number > 3 %}
+                                <span style="color: #339999;">...</span>
+                            {% endif %}
+                            {% if page_obj.number == 1 %}
+                                <a href="{{ request.get_full_path }}&page=2" class="btn btn-secondary" >2</a>
+                            {% elif page_obj.number == 2 %}
+                                <a href="{{ request.get_full_path }}&page=2" class="btn btn-secondary" >2</a>
+                                <a href="{{ request.get_full_path }}&page=3" class="btn btn-secondary" >3</a>
+                            {% elif page_obj.number == page_obj.paginator.num_pages %}
+                                <a href="{{ request.get_full_path }}&page={{ page_obj.previous_page_number }}" class="btn btn-secondary" >{{ page_obj.previous_page_number }}</a>
+                            {% elif page_obj.number > limit_for_listing %}
+                                <a href="{{ request.get_full_path }}&page={{ page_obj.previous_page_number }}" class="btn btn-secondary" >{{ page_obj.previous_page_number }}</a>
+                                <a href="{{ request.get_full_path }}&page={{ page_obj.number }}" class="btn btn-secondary" >{{ page_obj.number }}</a>
+                            {% else %}
+                                <a href="{{ request.get_full_path }}&page={{ page_obj.previous_page_number }}" class="btn btn-secondary" >{{ page_obj.previous_page_number }}</a>
+                                <a href="{{ request.get_full_path }}&page={{ page_obj.number }}" class="btn btn-secondary" >{{ page_obj.number }}</a>
+                                <a href="{{ request.get_full_path }}&page={{ page_obj.next_page_number }}" class="btn btn-secondary" >{{ page_obj.next_page_number }}</a>
+                            {% endif %}
+                            {% if page_obj.number < limit_for_listing %}
+                                <span style="color: #339999;">...</span>
+                            {% endif %}
+                            <a href="{{ request.get_full_path }}&page={{ page_obj.paginator.num_pages }}" class="btn btn-secondary" >{{ page_obj.paginator.num_pages }}</a>
+                        {% endif %}
+                    </div>
+                {% else %}
+                <div>
+                    {% if page_obj.has_previous %}
+                        <a href="?page={{ page_obj.previous_page_number }}" style="text-decoration: none; color: #339999;">&lt; back</a>
+                    {% else %}
+                        <span>&lt; back</span>
+                    {% endif %}
+                    {% if page_obj.has_next %}
+                        <a href="?page={{ page_obj.next_page_number }}" style="text-decoration: none; color: #339999;">forward &gt;</a>
+                    {% else %}
+                        <span>forward &gt;</span>
+                    {% endif %}
+                </div>
+                <div>
+                    {% if page_obj.paginator.num_pages < 6 %}
+                        {% for i in page_obj.paginator.page_range %}
+                            <a href="?page={{ i }}" class="btn btn-secondary" >{{ i }}</a>
+                        {% endfor %}
+                    {% else %}
+                        <a href="?page=1" class="btn btn-secondary" >1</a>
+                        {% if page_obj.number > 3 %}
+                            <span style="color: #339999;">...</span>
+                        {% endif %}
+                        {% if page_obj.number == 1 %}
+                            <a href="?page=2" class="btn btn-secondary" >2</a>
+                        {% elif page_obj.number == 2 %}
+                            <a href="?page=2" class="btn btn-secondary" >2</a>
+                            <a href="?page=3" class="btn btn-secondary" >3</a>
+                        {% elif page_obj.number == page_obj.paginator.num_pages %}
+                            <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-secondary" >{{ page_obj.previous_page_number }}</a>
+                        {% elif page_obj.number > limit_for_listing %}
+                            <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-secondary" >{{ page_obj.previous_page_number }}</a>
+                            <a href="?page={{ page_obj.number }}" class="btn btn-secondary" >{{ page_obj.number }}</a>
+                        {% else %}
+                            <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-secondary" >{{ page_obj.previous_page_number }}</a>
+                            <a href="?page={{ page_obj.number }}" class="btn btn-secondary" >{{ page_obj.number }}</a>
+                            <a href="?page={{ page_obj.next_page_number }}" class="btn btn-secondary" >{{ page_obj.next_page_number }}</a>
+                        {% endif %}
+                        {% if page_obj.number < limit_for_listing %}
+                            <span style="color: #339999;">...</span>
+                        {% endif %}
+                        <a href="?page={{ page_obj.paginator.num_pages }}" class="btn btn-secondary" >{{ page_obj.paginator.num_pages }}</a>
+                    {% endif %}
+                </div>
+                {% endif %}
+            {% endif %}
+        </div>
+        <div style="flex-basis: 10%">
+            <a href="/.." class="btn btn-secondary" >All news</a>
+        </div>
+    </div>
+{% endblock content %}

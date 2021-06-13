@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load custom_filters %}
+
+{% block title %}
+    Add post
+{% endblock title %}
+
+{% block content %}
+    <div style="display: flex">
+        <div style="flex-basis: 90%">
+            <h2>Post creation</h2>
+            <form method="POST">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="title" class="form-label">Title:</label>
+                    <input type="text" class="form-control" name="title" id="title" maxlength="255" required>
+                </div>
+                <div class="mb-3">
+                    <label for="content" class="form-label">Content:</label>
+                    <input type="text" class="form-control" name="content" id="content" required>
+                </div>
+                <div class="mb-3">
+                    <label for="author" class="form-label">Author:</label>
+                    <select id="author" name="author" required>
+                        <option selected disabled value="">Choose...</option>
+                        {% for author in authors %}
+                            <option value="{{ author.id }}">{{ author.user.username }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="post_type" class="form-label">Type:</label>
+                    <select id="post_type" name="post_type" required>
+                        <option selected disabled value="">Choose...</option>
+                        <option value="article">article</option>
+                        <option value="news">news</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="category" class="form-label">Category:</label>
+                    <select id="category" name="category" required>
+                        <option selected disabled value="">Choose...</option>
+                        {% for category in categories %}
+                            <option value="{{ category.category }}">{{ category.category }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-secondary">Create post</button>
+            </form>
+        </div>
+        <div style="flex-basis: 10%">
+            <a href="/.." class="btn btn-secondary" style="margin-bottom: 3%">All news</a>
+            {% if request.user.username %}
+                <a href="/news/accounts/logout" class="btn btn-secondary">Log out</a>
+            {% endif %}
+        </div>
+    </div>
+{% endblock content %}
